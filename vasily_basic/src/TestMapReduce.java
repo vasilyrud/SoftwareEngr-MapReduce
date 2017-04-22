@@ -38,7 +38,8 @@ public class TestMapReduce {
   }
 
   private static void newJavaWay() {
-    int sum = users.parallelStream().map(u -> u.age).reduce(0, (a, b) -> a+b);
+    // int sum = users.parallelStream().map(u -> u.age).reduce(0, (a, b) -> a+b);
+    int sum = users.parallelStream().mapToInt(u -> u.age).sum();
 
     System.out.println("NEW WAY Sum User Age: " + sum);
   }
