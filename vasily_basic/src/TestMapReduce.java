@@ -23,8 +23,19 @@ public class TestMapReduce {
     );
 
   public static void main(String[] args) {
+    long startTimeOld = System.nanoTime();
     oldJavaWay();
+    long endTimeOld = System.nanoTime();
+
+    long startTimeNew = System.nanoTime();
     newJavaWay();
+    long endTimeNew = System.nanoTime();
+
+    System.out.print("Time for iterative: ");
+    System.out.println(endTimeOld - startTimeOld);
+
+    System.out.print("Time for stream:    ");
+    System.out.println(endTimeNew - startTimeNew);
   }
 
   private static void oldJavaWay() {
@@ -34,13 +45,14 @@ public class TestMapReduce {
       sum += u.age;
     }
 
-    System.out.println("OLD WAY Sum User Age: " + sum);
+    double average = (double) sum / users.size();
+
+    System.out.println("OLD WAY average User Age: " + average);
   }
 
   private static void newJavaWay() {
-    // int sum = users.parallelStream().map(u -> u.age).reduce(0, (a, b) -> a+b);
-    int sum = users.parallelStream().mapToInt(u -> u.age).sum();
+    double average = users.parallelStream().mapToDouble(u -> u.age).average().getAsDouble();
 
-    System.out.println("NEW WAY Sum User Age: " + sum);
+    System.out.println("NEW WAY average User Age: " + average);
   }
 }
