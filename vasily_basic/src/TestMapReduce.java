@@ -21,15 +21,29 @@ public class TestMapReduce {
       new User(6, "Jane", "Michaels", 47),
       new User(7, "Kim", "Berlie", 60)
     );
+  
+  private static List<Integer> rand_nums = new ArrayList<Integer>();
+
+  private static final int total_nums = 100000000;
 
   public static void main(String[] args) {
-    long startTimeOld = System.nanoTime();
-    oldJavaWay();
-    long endTimeOld = System.nanoTime();
+    long startTimeOld;
+    long endTimeOld;
+    long startTimeNew;
+    long endTimeNew;
 
-    long startTimeNew = System.nanoTime();
+    for(int i = 0; i < total_nums; i++) {
+      // No need for high-quality random function yet
+      rand_nums.add((int)(Math.random() * 100));
+    }
+
+    startTimeOld = System.nanoTime();
+    oldJavaWay();
+    endTimeOld = System.nanoTime();
+
+    startTimeNew = System.nanoTime();
     newJavaWay();
-    long endTimeNew = System.nanoTime();
+    endTimeNew = System.nanoTime();
 
     System.out.print("Time for iterative: ");
     System.out.println(endTimeOld - startTimeOld);
@@ -39,19 +53,19 @@ public class TestMapReduce {
   }
 
   private static void oldJavaWay() {
-    int sum = 0;
+    int count = 0;
+    double average = 0;
 
-    for (User u : users) {
-      sum += u.age;
+    for (int num : rand_nums) {
+      average = (average*((double)count) + (double)num)/((double)(++count));
     }
-
-    double average = (double) sum / users.size();
 
     System.out.println("OLD WAY average User Age: " + average);
   }
 
   private static void newJavaWay() {
-    double average = users.parallelStream().mapToDouble(u -> u.age).average().getAsDouble();
+    // double average = users.parallelStream().mapToDouble(u -> u.age).average().getAsDouble();
+    double average = rand_nums.parallelStream().mapToDouble(u -> u).average().getAsDouble();
 
     System.out.println("NEW WAY average User Age: " + average);
   }
