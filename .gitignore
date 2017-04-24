@@ -12,3 +12,10 @@
 hs_err_pid*
 
 vasily_basic/build/
+
+projectWithTests/.metadata/
+
+projectWithTests/bin/
+
+projectWithTests/log/
+
