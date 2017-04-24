@@ -1,0 +1,15 @@
+Testsuite: test.unit.kqm1.ConnectFourGameTest
+Tests run: 12, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.063 sec
+
+Testcase: testVerticalWinLeftBottom took 0 sec
+Testcase: testVerticalWinRightBottom took 0 sec
+Testcase: testDiagonalRightBottom took 0 sec
+Testcase: testHorizontalLeftBottom took 0 sec
+Testcase: testHorizontalRightBottom took 0 sec
+Testcase: testDiagonalLeftBottom took 0 sec
+Testcase: testDiagonalLeftTop took 0 sec
+Testcase: testVerticalLeftTop took 0 sec
+Testcase: testVerticalLeftRight took 0 sec
+Testcase: testDiagonalRightTop took 0 sec
+Testcase: testHorizontalTopRight took 0 sec
+Testcase: testHorizontalTopLeft took 0 sec

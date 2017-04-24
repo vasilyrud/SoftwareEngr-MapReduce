@@ -1,0 +1,10 @@
+Testsuite: test.unit.wc1126.ConnectFourUnitTests
+Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.141 sec
+
+Testcase: testPlaceDisk took 0.016 sec
+Testcase: testGetBoard took 0 sec
+Testcase: testGetWinningPlayer took 0 sec
+Testcase: testGetCurrentPlayer took 0.031 sec
+Testcase: testIsGameOver took 0 sec
+Testcase: testGetColumns took 0 sec
+Testcase: testGetRow took 0 sec

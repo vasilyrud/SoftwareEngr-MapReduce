@@ -1,0 +1,16 @@
+Testsuite: test.unit.hs2973.ConnectFourBasicTest
+Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.156 sec
+
+Testcase: testGetWinningPlayerException took 0.015 sec
+Testcase: testPlaceDisk took 0 sec
+Testcase: testGetBoard took 0 sec
+Testcase: testGetRows took 0.015 sec
+Testcase: testGetCurrentPlayer took 0 sec
+Testcase: testGetWinningPlayerHorizontal took 0 sec
+Testcase: testPlaceDiskExceptions1 took 0 sec
+Testcase: testPlaceDiskExceptions2 took 0 sec
+Testcase: testIsGameOver took 0 sec
+Testcase: testGetColumns took 0 sec
+Testcase: testGetWinningPlayerVertical took 0 sec
+Testcase: testGetWinningPlayerFrontDiagonal took 0 sec
+Testcase: testDefaultConstructor took 0.016 sec

@@ -1,0 +1,14 @@
+Testsuite: test.unit.sa3904.ConnectFourGameTest
+Tests run: 7, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.125 sec
+
+Testcase: testExceptionsColFull took 0.016 sec
+Testcase: testLegit took 0 sec
+Testcase: testExceptionsForBadColsLeft took 0.016 sec
+Testcase: properWinnerIsDeclared took 0 sec
+Testcase: testExceptionsForBadColsRight took 0 sec
+Testcase: winnerAlreadyDeclared took 0 sec
+	FAILED
+Expected exception: exc.GameStateException
+junit.framework.AssertionFailedError: Expected exception: exc.GameStateException
+
+Testcase: testNoUnexpectedWinner took 0.016 sec
