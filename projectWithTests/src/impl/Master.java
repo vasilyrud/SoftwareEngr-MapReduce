@@ -6,16 +6,11 @@ import java.util.function.DoubleSupplier;
 
 public class Master {
     
-    
+    private int num_cores;
+
     public Master() {
-
+        this.num_cores = Runtime.getRuntime().availableProcessors();
     }
-
-    public static void main(String[] args) {
-        System.out.println("Master runs");
-    }
-
-
 }
 
 

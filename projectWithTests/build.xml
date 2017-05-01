@@ -49,7 +49,7 @@
   </target>
 
   <target name="run" depends="compile">
-    <java fork="true" classname="impl.Master">
+    <java fork="true" classname="impl.RunMapReduce">
       <jvmarg value="-ea"/>
       <classpath refid="default_classpath"/>
       <arg value="${view}"/>
