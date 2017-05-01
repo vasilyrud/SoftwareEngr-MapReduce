@@ -8,7 +8,7 @@ public class RunMapReduce {
     public static void main(String[] args) {
         Master master = Master.getInstance();
 
-        System.out.print(master.returnNumCores());
+        master.runLoops();
     }
 }
 
