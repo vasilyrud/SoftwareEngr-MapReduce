@@ -11,6 +11,8 @@ public class Master {
     
     private int num_cores;
     private ExecutorService thread_pool;
+    
+    // Make a list of pairs of indices to various parts of the file
 
     // Need to somehow keep track of threads and what they are up to
 
