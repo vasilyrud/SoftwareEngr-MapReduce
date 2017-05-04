@@ -6,9 +6,12 @@ import java.util.function.DoubleSupplier;
 
 public class RunMapReduce {
     public static void main(String[] args) {
-        Master master = Master.getInstance();
+        String file_path = "/Volumes/Samsung_T3/enwiki-20170420-pages-articles.xml";
 
-        master.runLoops();
+        Master master = Master.getInstance();
+        master.read_file(file_path);
+        master.get_countries();
+        // master.runLoops();
     }
 }
 
