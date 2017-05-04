@@ -10,6 +10,7 @@ public class RunMapReduce {
 
         Master master = Master.getInstance();
         master.read_file(file_path);
+        master.get_countries();
         // master.runLoops();
     }
 }

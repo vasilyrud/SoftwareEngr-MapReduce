@@ -15,8 +15,14 @@ public class Master {
     private int num_cores;
     private ExecutorService thread_pool;
     
+    private final ParseCountries country_parser;
+    private final String COUNTRIES_FILE;
+
     // Make a list of pairs of indices to various parts of the file
     public List<List<Long>> index_array;
+
+    // Country names to parse
+    public List<List<List<String>>> countries_array;
 
     // Need to somehow keep track of threads and what they are up to
 
@@ -25,7 +31,10 @@ public class Master {
         this.file_reader = new BlockReader();
         this.num_cores = Runtime.getRuntime().availableProcessors() - 1;
         this.thread_pool = Executors.newFixedThreadPool(num_cores);
+        this.country_parser = new ParseCountries();
+        this.COUNTRIES_FILE = "data/AllCountries.csv";
         this.index_array = new ArrayList<List<Long>>();
+        this.countries_array = new ArrayList<List<List<String>>>();
     }
 
     // Internal singleton method that stores the only class instance
@@ -61,9 +70,27 @@ public class Master {
         }
     }
 
+    private void printCountries() {
+        for (List<List<String>> country : countries_array) {
+            for (List<String> country_subname : country) {
+                for (String word : country_subname) {
+                    System.out.print(word);
+                    System.out.print("-");
+                }
+                System.out.print(";");
+            }
+            System.out.println("");
+        }
+    }
+
     public void read_file(String file_path) {
         file_reader.makeIndexArray(file_path, index_array);
         // printIndexArray();
+    }
+
+    public void get_countries() {
+        country_parser.parseFileIntoArray(COUNTRIES_FILE, countries_array);
+        // printCountries();
     }
 }
 

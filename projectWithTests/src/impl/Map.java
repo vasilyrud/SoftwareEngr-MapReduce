@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.function.DoubleSupplier;
 
 public class Map implements Runnable {
-    
+
     private int map_id;
     
     public Map(int id) {
