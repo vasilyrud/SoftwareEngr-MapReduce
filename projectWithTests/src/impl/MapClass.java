@@ -8,6 +8,10 @@ import java.util.function.DoubleSupplier;
 import java.io.RandomAccessFile;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Writer;
+import java.io.OutputStreamWriter;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
@@ -160,27 +164,25 @@ public class MapClass implements Runnable {
         }
 
         // afterwords, write all these countries and their respective counts into csv file
-        for (Map.Entry<String, Long> entry : countries_count.entrySet()) {
-            String key = entry.getKey();
-            Long value = entry.getValue();
-            System.out.println(key + "=" + value);
+        try {
+            Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(Master.getInstance().MAPDIR+"/map"+map_id+".csv"), "utf-8"));
+
+            for (Map.Entry<String, Long> entry : countries_count.entrySet()) {
+                String key = entry.getKey();
+                Long value = entry.getValue();
+                writer.write(key + "," + value + "\n");
+            }
+
+            writer.close();
+        } catch (IOException ex) {
+            System.out.println("Inside MapClass: IOException");
         }
-
-
-
-        // // Loop through countries
-        // for (int i = 0; i < Master.getInstance().countries_array.size(); i++) {
-        //     for (int j = 0; j < Master.getInstance().countries_array.get(i).size(); j++) {
-        //         for (int k = 0; k < Master.getInstance().countries_array.get(i).get(j).size(); k++) {
-        //             System.out.println(Master.getInstance().countries_array.get(i).get(j).get(k));
-        //         }
-        //     }
-        // }
 
 
         try {
             this.file.close();
-       } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             System.out.println("Inside map: FileNotFoundException occured");
         } catch (IOException e) {
             System.out.println("Inside map: IOException occured");

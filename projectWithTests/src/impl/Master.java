@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.HashMap;
 import java.util.Map;
+import java.io.File;
 
 import api.Reader;
 
@@ -23,6 +24,7 @@ public class Master {
     private Reader file_reader;
     public String main_file_path;
     public RandomAccessFile file;
+    public final String MAPDIR;
 
     private int num_cores;
     private int queue_size;
@@ -43,9 +45,10 @@ public class Master {
 
     // Constructor
     private Master() {
+        this.MAPDIR = "map_output";
         this.file_reader = new BlockReader();
-        // this.num_cores = Runtime.getRuntime().availableProcessors() - 1;
-        this.num_cores = 1;
+        this.num_cores = Runtime.getRuntime().availableProcessors() - 1;
+        // this.num_cores = 1;
         this.queue_size = 10;
         // this.thread_pool = Executors.newFixedThreadPool(num_cores);
         this.thread_queue = new ArrayBlockingQueue<Runnable>(queue_size);
@@ -78,19 +81,34 @@ public class Master {
         return num_cores;
     }
 
-    public void runMap() {
+    private void makeMapOutputDir(String dirname) {
+        File dir = new File(dirname);
+
+        // clear directory
+        if (dir.exists()) {
+            for (File f : dir.listFiles()) {
+                f.delete();
+            }
+            dir.delete();
+        }
         
+        // create the directory
+        if (dir.mkdir()) {
+            System.out.println("Created directory for MapClass: " + dirname);
+        }
+    }
+
+    public void runMap() {
+        System.out.println("Going through " + index_array.size() + " blocks.");
+        makeMapOutputDir(MAPDIR);
+
         // Execute as many maps as there are file segments
         for (int i = 0; i < index_array.size(); i++) {
-            // Runtime runtime = Runtime.getRuntime();
-            // System.out.println("Total Memory (MB): " + runtime.totalMemory()/(1024*1024));
-            // System.out.println("Free Memory (MB): " + runtime.freeMemory()/(1024*1024));
-
             while(true) {
                 try {
                     thread_pool.execute(new MapClass(i,
-                                                index_array.get(i).get(0),
-                                                index_array.get(i).get(1)
+                                                     index_array.get(i).get(0),
+                                                     index_array.get(i).get(1)
                                         ));
                     break;
                 } catch (RejectedExecutionException e) {
