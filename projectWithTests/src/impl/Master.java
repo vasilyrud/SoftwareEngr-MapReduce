@@ -5,14 +5,29 @@ import java.util.stream.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.function.DoubleSupplier;
+import java.io.RandomAccessFile;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.HashMap;
+import java.util.Map;
+import java.io.File;
 
 import api.Reader;
 
 // Singleton because there is only one Master
 public class Master {
     private Reader file_reader;
+    public String main_file_path;
+    public RandomAccessFile file;
+    public final String MAPDIR;
 
     private int num_cores;
+    private int queue_size;
     private ExecutorService thread_pool;
     
     private final ParseCountries country_parser;
@@ -23,18 +38,32 @@ public class Master {
 
     // Country names to parse
     public List<List<List<String>>> countries_array;
+    public HashMap<String, List<Integer>> countries_indices;
 
     // Need to somehow keep track of threads and what they are up to
+    public BlockingQueue<Runnable> thread_queue;
 
     // Constructor
     private Master() {
+        this.MAPDIR = "map_output";
         this.file_reader = new BlockReader();
         this.num_cores = Runtime.getRuntime().availableProcessors() - 1;
-        this.thread_pool = Executors.newFixedThreadPool(num_cores);
+        // this.num_cores = 1;
+        this.queue_size = 10;
+        // this.thread_pool = Executors.newFixedThreadPool(num_cores);
+        this.thread_queue = new ArrayBlockingQueue<Runnable>(queue_size);
+        this.thread_pool = new ThreadPoolExecutor(
+                                    num_cores,
+                                    num_cores,
+                                    10,
+                                    TimeUnit.SECONDS,
+                                    thread_queue
+                                );
         this.country_parser = new ParseCountries();
         this.COUNTRIES_FILE = "data/AllCountries.csv";
         this.index_array = new ArrayList<List<Long>>();
         this.countries_array = new ArrayList<List<List<String>>>();
+        this.countries_indices = new HashMap<String, List<Integer>>();
     }
 
     // Internal singleton method that stores the only class instance
@@ -52,12 +81,56 @@ public class Master {
         return num_cores;
     }
 
-    public void runLoops() {
-        for (int i = 0; i < 4; i++) {
-         thread_pool.execute(new Map(i));
-       }
+    private void makeMapOutputDir(String dirname) {
+        File dir = new File(dirname);
 
-       // Need to decide when to shutdown
+        // clear directory
+        if (dir.exists()) {
+            for (File f : dir.listFiles()) {
+                f.delete();
+            }
+            dir.delete();
+        }
+        
+        // create the directory
+        if (dir.mkdir()) {
+            System.out.println("Created directory for MapClass: " + dirname);
+        }
+    }
+
+    public void runMap() {
+        System.out.println("Going through " + index_array.size() + " blocks.");
+        makeMapOutputDir(MAPDIR);
+
+        // Execute as many maps as there are file segments
+        for (int i = 0; i < index_array.size(); i++) {
+        // for (int i = 0; i < 100; i++) {
+            while(true) {
+                try {
+                    thread_pool.execute(new MapClass(i,
+                                                    index_array.get(i).get(0),
+                                                    index_array.get(i).get(1)
+                                        ));
+                    break;
+                } catch (RejectedExecutionException e) {
+                    System.out.println("Rejected Execution");
+                    try {
+                        TimeUnit.MILLISECONDS.sleep(1000);
+                    } catch (InterruptedException te) {
+                        System.out.println("InterruptedException thrown");
+                    }
+                }
+            }
+        }
+
+
+        // Need to decide when to shutdown
+        thread_pool.shutdown();
+        try {
+            thread_pool.awaitTermination(30L, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            System.out.println("InterruptedException in master");
+        }
     }
 
     private void printIndexArray() {
@@ -84,13 +157,16 @@ public class Master {
     }
 
     public void read_file(String file_path) {
+        this.main_file_path = file_path;
         file_reader.makeIndexArray(file_path, index_array);
         // printIndexArray();
     }
 
     public void get_countries() {
-        country_parser.parseFileIntoArray(COUNTRIES_FILE, countries_array);
+        country_parser.parseFileIntoArray(COUNTRIES_FILE, countries_array, countries_indices);
         // printCountries();
     }
+
+    // public void run
 }
 

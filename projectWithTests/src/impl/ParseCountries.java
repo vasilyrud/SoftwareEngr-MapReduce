@@ -18,7 +18,7 @@ public class ParseCountries {
         
     }
 
-    public void parseFileIntoArray(String filename, List<List<List<String>>> array) {
+    public void parseFileIntoArray(String filename, List<List<List<String>>> array, HashMap<String, List<Integer>> hash_map) {
         /* 
 
         // Country
@@ -73,6 +73,15 @@ public class ParseCountries {
             System.out.println("FileNotFoundException occured");
         } catch (IOException e) {
             System.out.println("IOException occured");
+        }
+
+        // Make a shortcut hash map of all country indices
+        for (int m = 0; m < array.size(); m++) {
+            for (int n = 0; n < array.get(m).size(); n++) {
+                hash_map.put(array.get(m).get(n).get(0), new ArrayList<Integer>());
+                hash_map.get(array.get(m).get(n).get(0)).add(m);
+                hash_map.get(array.get(m).get(n).get(0)).add(n);
+            }
         }
     }
 }
