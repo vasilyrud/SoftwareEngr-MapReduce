@@ -65,6 +65,8 @@ public class MapClass implements Runnable {
         System.out.print(map_id);
         System.out.println("");
 
+        Long startTime = System.currentTimeMillis();
+
         try {
             this.file = new RandomAccessFile(Master.getInstance().main_file_path, "r");
         } catch (FileNotFoundException e) {
@@ -77,7 +79,6 @@ public class MapClass implements Runnable {
         // Find start of segment
         try { 
             file.seek(start);
-            // file.readFully(read_buffer);
         } catch (IOException e) {
             System.out.println("Inside map: IOException occured");
         } catch (NullPointerException e) {
@@ -191,9 +192,9 @@ public class MapClass implements Runnable {
         }
 
 
-        System.out.print("Ending map with id: ");
-        System.out.print(map_id);
-        System.out.println("");
+        Long stopTime = System.currentTimeMillis();
+        Long elapsedTime = stopTime - startTime;
+        System.out.println("Ending map with id: " + map_id + ", seconds ran: " + elapsedTime.floatValue()/1000);
     }
 }
 
