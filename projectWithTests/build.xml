@@ -28,9 +28,7 @@
     <javac srcdir="${src}"
 	   destdir="${build}"
 	   classpathref="default_classpath"
-	   includeantruntime="false"
-     fork="true"
-     memoryinitialsize="1024m">
+	   includeantruntime="false">
       <compilerarg value="-Xlint:unchecked"/>
     </javac>
   </target>
