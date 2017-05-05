@@ -104,26 +104,33 @@ public class Master {
 
         // Execute as many maps as there are file segments
         for (int i = 0; i < index_array.size(); i++) {
+        // for (int i = 0; i < 100; i++) {
             while(true) {
                 try {
                     thread_pool.execute(new MapClass(i,
-                                                     index_array.get(i).get(0),
-                                                     index_array.get(i).get(1)
+                                                    index_array.get(i).get(0),
+                                                    index_array.get(i).get(1)
                                         ));
                     break;
                 } catch (RejectedExecutionException e) {
                     System.out.println("Rejected Execution");
                     try {
-                        TimeUnit.SECONDS.sleep(10);
+                        TimeUnit.MILLISECONDS.sleep(1000);
                     } catch (InterruptedException te) {
                         System.out.println("InterruptedException thrown");
                     }
                 }
             }
-       }
+        }
 
 
-       // Need to decide when to shutdown
+        // Need to decide when to shutdown
+        thread_pool.shutdown();
+        try {
+            thread_pool.awaitTermination(30L, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            System.out.println("InterruptedException in master");
+        }
     }
 
     private void printIndexArray() {

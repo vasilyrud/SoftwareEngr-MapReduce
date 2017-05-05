@@ -21,11 +21,14 @@ public class MapClass implements Runnable {
     private int map_id;
     private Long start;
     private Long end;
-    
+    private int total;
+
     private int word_index_i;
     private int word_index_j;
 
     private RandomAccessFile file;
+
+    private byte [] buffer;
 
     public Map<String, Long> countries_count;
 
@@ -33,6 +36,8 @@ public class MapClass implements Runnable {
         this.map_id = id;
         this.start = start;
         this.end = end;
+        this.total = (int)(end - start);
+        this.buffer = new byte[total];
         this.word_index_i = -1;
         this.word_index_j = -1;
         this.countries_count = new HashMap<String, Long>();
@@ -76,50 +81,43 @@ public class MapClass implements Runnable {
         }
 
 
+        char curr_char = '0';
+        int byte_counter = 0;
+        int counter = 0;
+        StringBuilder curr_word = new StringBuilder(30);
+        String string_word;
+        ArrayList<String> final_string;
+        int expected_phrase_size = 0;
+
         // Find start of segment
-        try { 
+        try {
             file.seek(start);
+            file.read(buffer);
         } catch (IOException e) {
             System.out.println("Inside map: IOException occured");
         } catch (NullPointerException e) {
             System.out.println("CAUGHT NullPointerException");
         }
 
-
-        char curr_char = '0';
-        int counter = 0;
-        int total = (int)(end - start);
-        StringBuilder curr_word = new StringBuilder(30);
-        String string_word;
-        ArrayList<String> final_string;
-        int expected_phrase_size = 0;
         while (true) {
             if (counter >= total) {
                 break;
             }
 
             // Iterate through file bytes until an uppercase character is reached
-            try {
-                do {
-                    curr_char = (char)file.readByte();
-                    counter++;
-                } while (!Character.isUpperCase(curr_char) && counter < total);
-            } catch (IOException e) {
-                System.out.println("IOException thrown");
-            }
+            do {
+                curr_char = (char)buffer[counter];
+                counter++;
+            } while (!Character.isUpperCase(curr_char) && counter < total);
 
             // aggregate characters into a word
             curr_word.setLength(0);
             curr_word.append(curr_char);
-            try {
-                while (Character.isLetter(curr_char = (char)file.readByte()) && counter < total) {
-                    counter++;
-                    curr_word.append(curr_char);
-                }
-            } catch (IOException e) {
-                System.out.println("IOException thrown");
+            while (counter < total && Character.isLetter(curr_char = (char)buffer[counter])) {
+                counter++;
+                curr_word.append(curr_char);
             }
-
+            
             // loop through all countries to check if the word matches with any of the first words in the sub-names
             string_word = curr_word.toString();
             if (find_word_index(string_word) == false) {
@@ -134,13 +132,9 @@ public class MapClass implements Runnable {
                     expected_phrase_size += Master.getInstance().countries_array.get(word_index_i).get(word_index_j).get(p).length();
                 }
                 curr_word.append(curr_char); // append the one from previous loop
-                for (int l = 0; l < expected_phrase_size && counter < total; l++) {
+                for (int l = 0; counter < total && l < expected_phrase_size; l++) {
                     counter++;
-                    try {
-                        curr_word.append(curr_char = (char)file.readByte());
-                    } catch (IOException e) {
-                        System.out.println("IOException thrown");
-                    }
+                    curr_word.append(curr_char = (char)buffer[counter]);
                 }
             }
 
@@ -164,7 +158,7 @@ public class MapClass implements Runnable {
             }
         }
 
-        // afterwords, write all these countries and their respective counts into csv file
+        // afterwards, write all these countries and their respective counts into csv file
         try {
             Writer writer = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(Master.getInstance().MAPDIR+"/map"+map_id+".csv"), "utf-8"));
@@ -191,10 +185,9 @@ public class MapClass implements Runnable {
             System.out.println("CAUGHT NullPointerException");
         }
 
-
         Long stopTime = System.currentTimeMillis();
         Long elapsedTime = stopTime - startTime;
-        System.out.println("Ending map with id: " + map_id + ", seconds ran: " + elapsedTime.floatValue()/1000);
+        System.out.println("Timing map with id: " + map_id + ", milli-seconds ran: " + elapsedTime.floatValue());
     }
 }
 
