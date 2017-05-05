@@ -1,7 +1,7 @@
 package test.unit.elo239;
 
 import impl.MapReduce;
-import impl.User;
+
 
 import org.junit.Test;
 
@@ -25,9 +25,9 @@ public class MapReduceTest {
     	double oldAverage = mapReduce.oldJavaWay(nums);
     	assertEquals(newAverage, oldAverage, 0.001);
 	}
-    
+
 /*
-       
+
     }
 
     @Test
@@ -38,10 +38,10 @@ public class MapReduceTest {
 	      // No need for high-quality random function yet
 	      rand_nums.add((int)(Math.random() * 100));
 	    }
-       
+
     }
 
-    
+
 
   public static final int total_nums = 100000000;
   public static void main(String[] args) {
@@ -74,5 +74,5 @@ public class MapReduceTest {
     }
   }
   */
-   
+
 }

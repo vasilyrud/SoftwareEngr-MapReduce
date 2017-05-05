@@ -29,7 +29,7 @@ public class Master {
     private int num_cores;
     private int queue_size;
     private ExecutorService thread_pool;
-    
+
     private final ParseCountries country_parser;
     private final String COUNTRIES_FILE;
 
@@ -91,7 +91,7 @@ public class Master {
             }
             dir.delete();
         }
-        
+
         // create the directory
         if (dir.mkdir()) {
             System.out.println("Created directory for MapClass: " + dirname);
@@ -99,7 +99,7 @@ public class Master {
     }
 
     public void runMap() {
-        System.out.println("Going through " + index_array.size() + " blocks.");
+        System.out.println("Going through " + index_array.size() + " blocks on " + num_cores + " cores.");
         makeMapOutputDir(MAPDIR);
 
         // Execute as many maps as there are file segments
@@ -138,7 +138,7 @@ public class Master {
             System.out.print(pair.get(0));
             System.out.print(" ");
             System.out.print(pair.get(1));
-            
+
             System.out.println("");
         }
     }
@@ -169,4 +169,3 @@ public class Master {
 
     // public void run
 }
-
