@@ -13,6 +13,8 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.HashMap;
+import java.util.Map;
 
 import api.Reader;
 
@@ -34,6 +36,7 @@ public class Master {
 
     // Country names to parse
     public List<List<List<String>>> countries_array;
+    public HashMap<String, List<Integer>> countries_indices;
 
     // Need to somehow keep track of threads and what they are up to
     public BlockingQueue<Runnable> thread_queue;
@@ -57,6 +60,7 @@ public class Master {
         this.COUNTRIES_FILE = "data/AllCountries.csv";
         this.index_array = new ArrayList<List<Long>>();
         this.countries_array = new ArrayList<List<List<String>>>();
+        this.countries_indices = new HashMap<String, List<Integer>>();
     }
 
     // Internal singleton method that stores the only class instance
@@ -134,7 +138,7 @@ public class Master {
     }
 
     public void get_countries() {
-        country_parser.parseFileIntoArray(COUNTRIES_FILE, countries_array);
+        country_parser.parseFileIntoArray(COUNTRIES_FILE, countries_array, countries_indices);
         // printCountries();
     }
 

@@ -25,27 +25,20 @@ public class MapClass implements Runnable {
 
     public Map<String, Long> countries_count;
 
-    // private byte[] read_buffer;
-
     public MapClass(int id, Long start, Long end) {
         this.map_id = id;
         this.start = start;
         this.end = end;
-        // this.read_buffer = new byte[(int)(end - start)];
         this.word_index_i = -1;
         this.word_index_j = -1;
         this.countries_count = new HashMap<String, Long>();
     }
 
     private boolean find_word_index(String word) {
-        for (int i = 0; i < Master.getInstance().countries_array.size(); i++) {
-            for (int j = 0; j < Master.getInstance().countries_array.get(i).size(); j++) {
-                if (word.equals(Master.getInstance().countries_array.get(i).get(j).get(0))) {
-                    word_index_i = i;
-                    word_index_j = j;
-                    return true;
-                }
-            }
+        if (Master.getInstance().countries_indices.containsKey(word)) {
+            word_index_i = Master.getInstance().countries_indices.get(word).get(0);
+            word_index_j = Master.getInstance().countries_indices.get(word).get(1);
+            return true;
         }
         return false;
     }
@@ -75,9 +68,6 @@ public class MapClass implements Runnable {
         } catch (NullPointerException e) {
             System.out.println("CAUGHT NullPointerException");
         }
-
-
-        // assertNotNull(this.file);
 
 
         // Find start of segment
@@ -148,6 +138,8 @@ public class MapClass implements Runnable {
                     }
                 }
             }
+
+            // check if the string matches expected country name
             final_string = new ArrayList<String>(Arrays.asList(curr_word.toString().split(" ")));
             if (arrays_equal(final_string, Master.getInstance().countries_array.get(word_index_i).get(word_index_j)) == -1) {
                 continue;
@@ -175,9 +167,6 @@ public class MapClass implements Runnable {
         }
 
 
-
-
-        // Split by "\\W+" to get all words in stream
 
         // // Loop through countries
         // for (int i = 0; i < Master.getInstance().countries_array.size(); i++) {
