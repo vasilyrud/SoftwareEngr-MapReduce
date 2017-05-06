@@ -135,7 +135,7 @@ public class MapClass implements Runnable {
     private void fileInit(Long start, byte [] buffer){
         // read file
         try {
-            this.file = new RandomAccessFile(Master.getInstance().main_file_path, "r");
+            this.file = new RandomAccessFile(Master.getInstance().src_file_path, "r");
         } catch (FileNotFoundException e) {
             System.out.println("Inside map: FileNotFoundException occured");
         } catch (NullPointerException e) {

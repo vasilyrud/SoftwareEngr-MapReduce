@@ -21,12 +21,29 @@ import api.Reader;
 
 // Singleton because there is only one Master
 public class Master {
-    private Reader file_reader;
-    public String main_file_path;
+/*********************************************
+    ADJUSTABLE SETTINGS
+*********************************************/
+    // 616 MB wiki xml source file (Windows)
+    public String src_file_path = "C:/Users/USER/Documents/Software Engineering/SoftwareEngr-MapReduce/smallWiki.xml";
+    // 58 GB wiki xml file on hard drive (Mac)
+    //public String file_path = "/Volumes/Samsung_T3/enwiki-20170420-pages-articles.xml";
+
+    // standard map output setting
+    public final String MAPDIR = "map_output";
+    //access catched map output on external hard drive (Mac)
+    // public final String MAPDIR = "/Volumes/Samsung_T3/map_output";
+
+    // reduce output folder path
+    public final String REDDIR = "reduce_output";
+
+    // block size in MB for splititng up the file
+    private int block_size = 50;
+
+/*******************************************/    
+ 
     public RandomAccessFile file;
-    public final String MAPDIR;
-    public final String REDDIR;
-    public String cached_map_output;
+    private Reader file_reader;
 
     private int num_cores;
     private int queue_size;
@@ -49,14 +66,9 @@ public class Master {
 
     // Constructor
     private Master() {
-        this.MAPDIR = "map_output";
-        this.REDDIR = "reduce_output";
-        this.cached_map_output = "/Volumes/Samsung_T3/map_output";
-        this.file_reader = new BlockReader();
+        this.file_reader = new BlockReader(block_size);
         this.num_cores = Runtime.getRuntime().availableProcessors() - 1;
-        // this.num_cores = 1;
         this.queue_size = 10;
-        // this.thread_pool = Executors.newFixedThreadPool(num_cores);
         this.thread_queue = new ArrayBlockingQueue<Runnable>(queue_size);
         this.thread_pool = new ThreadPoolExecutor(
                                     num_cores,
@@ -168,9 +180,8 @@ public class Master {
         }
     }
 
-    public void read_file(String file_path) {
-        this.main_file_path = file_path;
-        file_reader.makeIndexArray(file_path, index_array);
+    public void read_file() {
+        file_reader.makeIndexArray(src_file_path, index_array);
         // printIndexArray();
     }
 

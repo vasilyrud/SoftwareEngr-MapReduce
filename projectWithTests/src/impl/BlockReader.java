@@ -10,11 +10,11 @@ import java.io.IOException;
 
 public class BlockReader implements Reader {
 
-    public final int BLOCK_SIZE = 500000000; // 500 MB
+    public int BLOCK_SIZE;
 
     // constructor
-    public BlockReader() {
-
+    public BlockReader(int blockSize) { 
+        this.BLOCK_SIZE = blockSize*1000000;
     }
 
     public void makeIndexArray(String filename, List<List<Long>> array) {
