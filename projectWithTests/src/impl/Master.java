@@ -25,6 +25,8 @@ public class Master {
     public String main_file_path;
     public RandomAccessFile file;
     public final String MAPDIR;
+    public final String REDDIR;
+    public String cached_map_output;
 
     private int num_cores;
     private int queue_size;
@@ -43,9 +45,13 @@ public class Master {
     // Need to somehow keep track of threads and what they are up to
     public BlockingQueue<Runnable> thread_queue;
 
+    public ReduceClass reducer;
+
     // Constructor
     private Master() {
         this.MAPDIR = "map_output";
+        this.REDDIR = "reduce_output";
+        this.cached_map_output = "/Volumes/Samsung_T3/map_output";
         this.file_reader = new BlockReader();
         this.num_cores = Runtime.getRuntime().availableProcessors() - 1;
         // this.num_cores = 1;
@@ -64,6 +70,7 @@ public class Master {
         this.index_array = new ArrayList<List<Long>>();
         this.countries_array = new ArrayList<List<List<String>>>();
         this.countries_indices = new HashMap<String, List<Integer>>();
+        this.reducer = new ReduceClass();
     }
 
     // Internal singleton method that stores the only class instance
@@ -81,7 +88,7 @@ public class Master {
         return num_cores;
     }
 
-    private void makeMapOutputDir(String dirname) {
+    private void makeOutputDir(String dirname) {
         File dir = new File(dirname);
 
         // clear directory
@@ -94,13 +101,13 @@ public class Master {
 
         // create the directory
         if (dir.mkdir()) {
-            System.out.println("Created directory for MapClass: " + dirname);
+            System.out.println("Created directory: " + dirname);
         }
     }
 
     public void runMap() {
         System.out.println("Going through " + index_array.size() + " blocks on " + num_cores + " cores.");
-        makeMapOutputDir(MAPDIR);
+        makeOutputDir(MAPDIR);
 
         // Execute as many maps as there are file segments
         for (int i = 0; i < index_array.size(); i++) {
@@ -131,6 +138,11 @@ public class Master {
         } catch (InterruptedException e) {
             System.out.println("InterruptedException in master");
         }
+    }
+
+    public void runReduce() {
+        makeOutputDir(REDDIR);
+        reducer.runReduce();
     }
 
     private void printIndexArray() {

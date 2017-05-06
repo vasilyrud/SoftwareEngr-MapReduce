@@ -10,7 +10,7 @@ import java.io.IOException;
 
 public class BlockReader implements Reader {
 
-    public final int BLOCK_SIZE = 50000000; // 50 MB
+    public final int BLOCK_SIZE = 500000000; // 500 MB
 
     // constructor
     public BlockReader() {

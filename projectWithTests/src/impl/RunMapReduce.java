@@ -16,11 +16,13 @@ public class RunMapReduce {
         master.read_file(file_path);
         master.get_countries();
 
-        Long startTime = System.currentTimeMillis();
-        master.runMap();
-        Long stopTime = System.currentTimeMillis();
-        Long elapsedTime = stopTime - startTime;
-        System.out.println("Total time taken (seconds): " + elapsedTime.floatValue()/1000L);
+        // Long startTime = System.currentTimeMillis();
+        // master.runMap();
+        // Long stopTime = System.currentTimeMillis();
+        // Long elapsedTime = stopTime - startTime;
+        // System.out.println("Total time taken (seconds): " + elapsedTime.floatValue()/1000L);
+
+        master.runReduce();
     }
 }
 
