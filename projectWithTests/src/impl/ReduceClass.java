@@ -20,11 +20,24 @@ import java.util.Iterator;
 
 public class ReduceClass {
 
+    private int word_index_i;
+    private int word_index_j;
+
     public Map<String, Long> countries_count;
 
     // Constructor
     public ReduceClass() {
+        this.word_index_i = -1;
+        this.word_index_j = -1;
+    }
 
+    private boolean find_word_index(String word) {
+        if (Master.getInstance().countries_indices.containsKey(word)) {
+            word_index_i = Master.getInstance().countries_indices.get(word).get(0);
+            word_index_j = Master.getInstance().countries_indices.get(word).get(1);
+            return true;
+        }
+        return false;
     }
 
     public void runReduce() {
@@ -41,8 +54,22 @@ public class ReduceClass {
                     List<String> tmp_country_split = Arrays.asList(line.split(","));
 
                     // Get country name and amount
-                    String hash_name = tmp_country_split.get(0);
+                    String country_name = tmp_country_split.get(0);
                     Long hash_amount = Long.parseLong(tmp_country_split.get(1));
+
+                    // Find index of the first word in the country name
+                    if (find_word_index(country_name.split(" ")[0])) {
+
+                    }
+
+                    // Get the canonical name to use for this country
+                    String hash_name = "";
+                    for (String s : Master.getInstance().countries_array.get(word_index_i).get(0)) {
+                        hash_name += s + " ";
+                    }
+                    hash_name = hash_name.substring(0, hash_name.length() - 1);
+
+
                     // Check if country is already in hashMap
                     Long curr_value = countries_count.get(hash_name);
                     if (curr_value == null) {
