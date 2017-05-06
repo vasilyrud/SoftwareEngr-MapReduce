@@ -16,6 +16,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
 
+/*** MapClass processes a certain block of text specified via the constructor.
+It counts the number of times each country is mentioned in that block and
+writes its results into a mapX csv file, where X is its block id. ***/
+
 public class MapClass implements Runnable {
 
     private int map_id;
@@ -49,16 +53,14 @@ public class MapClass implements Runnable {
         // retrieve the file block to be processed
         this.fileInit(start, buffer);
 
-        char curr_char = '0';
-        int byte_counter = 0;
         int counter = 0;
+        int expected_phrase_size = 0;
+        char curr_char = '0';
         StringBuilder curr_word = new StringBuilder(30);
         String string_word;
         List<String> potential_match;
         ArrayList<String> final_string;
-        int expected_phrase_size = 0;
-
-    
+        
         while (counter < total) {
 
             // Iterate through file bytes until an uppercase character is reached
@@ -75,7 +77,7 @@ public class MapClass implements Runnable {
                 curr_word.append(curr_char);
             }
             
-            // loop through all countries to check if the word matches with any of the first words in the sub-names
+            // check if the word matches with any of the first words in the country sub-names
             // if it does identify potential match country name
             string_word = curr_word.toString();
             if (!find_word_index(string_word)) continue;   
@@ -85,8 +87,8 @@ public class MapClass implements Runnable {
             if (potential_match.size() > 1) {
                 expected_phrase_size = 0;
                 for (int p = 1; p < potential_match.size(); p++) {
-                    expected_phrase_size += 1; // account for spaces
-                    expected_phrase_size += potential_match.get(p).length();
+                    // account for spaces
+                    expected_phrase_size += potential_match.get(p).length() + 1;
                 }
                 curr_word.append(curr_char); // append the one from previous loop
                 for (int l = 0; counter < total && l < expected_phrase_size; l++) {
@@ -101,37 +103,11 @@ public class MapClass implements Runnable {
                 continue;
             }
 
-            // if there is a full match, iterate in a local HashMap the country name (i.e. first subname)
-            String hash_name = "";
-            for (String s : potential_match) {
-                hash_name += s + " ";
-            }
-            hash_name = hash_name.substring(0, hash_name.length() - 1);
-            Long curr_value = countries_count.get(hash_name);
-            if (curr_value == null) {
-                countries_count.put(hash_name, 1L);
-            } else {
-                countries_count.put(hash_name, curr_value + 1L);
-            }
+            // if there is a full match, icrement country count in a local HashMap
+            this.incremenetCountLocally(potential_match);
         }
 
-        // afterwards, write all these countries and their respective counts into csv file
-        try {
-            Writer writer = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(Master.getInstance().MAPDIR+"/map"+map_id+".csv"), "utf-8"));
-
-            for (Map.Entry<String, Long> entry : countries_count.entrySet()) {
-                String key = entry.getKey();
-                Long value = entry.getValue();
-                writer.write(key + "," + value + "\n");
-            }
-
-            writer.close();
-        } catch (IOException ex) {
-            System.out.println("Inside MapClass: IOException");
-        }
-
-
+        //close file
         try {
             this.file.close();
         } catch (FileNotFoundException e) {
@@ -142,11 +118,20 @@ public class MapClass implements Runnable {
             System.out.println("CAUGHT NullPointerException");
         }
 
+        // write locally stored countries and their respective counts into memory
+        this.wirteCountryCountsToCSV();
+
+
+        // end run()
         Long stopTime = System.currentTimeMillis();
         Long elapsedTime = stopTime - startTime;
         System.out.println("Timing map with id: " + map_id + ", milli-seconds ran: " + elapsedTime.floatValue());
     }
 
+
+    /****** HELPERS *****/
+
+    //reads file and opens the required block segemnt
     private void fileInit(Long start, byte [] buffer){
         // read file
         try {
@@ -168,8 +153,41 @@ public class MapClass implements Runnable {
         }
     }
 
-    /****** HELPERS *****/
+    // increments country count in a local hash map
+    private void incremenetCountLocally(List<String> country){
+        String hash_name = "";
+        for (String s : country) {
+            hash_name += s + " ";
+        }
+        hash_name = hash_name.substring(0, hash_name.length() - 1);
+        Long curr_value = countries_count.get(hash_name);
+        if (curr_value == null) {
+            countries_count.put(hash_name, 1L);
+        } else {
+            countries_count.put(hash_name, curr_value + 1L);
+        }
+    }
 
+    // writes the local hash map results into memory csv file
+    private void wirteCountryCountsToCSV(){
+         try {
+            Writer writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream(Master.getInstance().MAPDIR+"/map"+map_id+".csv"), "utf-8"));
+
+            for (Map.Entry<String, Long> entry : countries_count.entrySet()) {
+                String key = entry.getKey();
+                Long value = entry.getValue();
+                writer.write(key + "," + value + "\n");
+            }
+
+            writer.close();
+        } catch (IOException ex) {
+            System.out.println("Inside MapClass: IOException");
+        }
+    }
+
+
+    // if a word is contianed in the country list then set word indeces to it
     private boolean find_word_index(String word) {
     if (Master.getInstance().countries_indices.containsKey(word)) {
         word_index_i = Master.getInstance().countries_indices.get(word).get(0);
@@ -179,6 +197,7 @@ public class MapClass implements Runnable {
     return false;
     }
 
+    // checks if two string arrays are equal
     private int arrays_equal(List<String> array_1, List<String> array_2) {
         if (array_1.size() != array_2.size()) {
             return -1;
