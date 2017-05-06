@@ -21,27 +21,11 @@ import api.Reader;
 
 // Singleton because there is only one Master
 public class Master {
-/*********************************************
-    ADJUSTABLE SETTINGS
-*********************************************/
-    // 616 MB wiki xml source file (Windows)
-    public String src_file_path = "C:/Users/USER/Documents/Software Engineering/SoftwareEngr-MapReduce/smallWiki.xml";
-    // 58 GB wiki xml file on hard drive (Mac)
-    //public String file_path = "/Volumes/Samsung_T3/enwiki-20170420-pages-articles.xml";
 
-    // standard map output setting
-    public final String MAPDIR = "map_output";
-    //access catched map output on external hard drive (Mac)
-    // public final String MAPDIR = "/Volumes/Samsung_T3/map_output";
-
-    // reduce output folder path
-    public final String REDDIR = "reduce_output";
-
-    // block size in MB for splititng up the file
-    private int block_size = 50;
-
-/*******************************************/    
- 
+    public String src_file_path;
+    public String MAPDIR;
+    public String REDDIR;
+    private int block_size;  
     public RandomAccessFile file;
     private Reader file_reader;
 
@@ -66,7 +50,6 @@ public class Master {
 
     // Constructor
     private Master() {
-        this.file_reader = new BlockReader(block_size);
         this.num_cores = Runtime.getRuntime().availableProcessors() - 1;
         this.queue_size = 10;
         this.thread_queue = new ArrayBlockingQueue<Runnable>(queue_size);
@@ -83,6 +66,14 @@ public class Master {
         this.countries_array = new ArrayList<List<List<String>>>();
         this.countries_indices = new HashMap<String, List<Integer>>();
         this.reducer = new ReduceClass();
+    }
+
+    public void init(String srcFilePath, String mapDir, String reduceDir, int blockSize){
+        this.src_file_path = srcFilePath;
+        this.MAPDIR = mapDir;
+        this.REDDIR = reduceDir;
+        this.block_size = blockSize; 
+        this.file_reader = new BlockReader(block_size);
     }
 
     // Internal singleton method that stores the only class instance
@@ -123,7 +114,6 @@ public class Master {
 
         // Execute as many maps as there are file segments
         for (int i = 0; i < index_array.size(); i++) {
-        // for (int i = 0; i < 100; i++) {
             while(true) {
                 try {
                     thread_pool.execute(new MapClass(i,
@@ -132,7 +122,7 @@ public class Master {
                                         ));
                     break;
                 } catch (RejectedExecutionException e) {
-                    System.out.println("Rejected Execution");
+                    System.out.println("Rejected Execution. Thread delayed.");
                     try {
                         TimeUnit.MILLISECONDS.sleep(1000);
                     } catch (InterruptedException te) {
@@ -190,5 +180,4 @@ public class Master {
         // printCountries();
     }
 
-    // public void run
 }
