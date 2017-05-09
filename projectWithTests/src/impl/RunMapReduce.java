@@ -29,7 +29,7 @@ public class RunMapReduce {
             // 58 GB wiki xml file on hard drive (Mac)
             //String file_path = "/Volumes/Samsung_T3/enwiki-20170420-pages-articles.xml";
 
-            //String search_file_path = "data/AllCountries.csv";
+            //String search_file_path = "data/AllSearchquery.csv";
 
             // block size in MB for splititng up the file
             //int block_size = 100;
@@ -51,7 +51,7 @@ public class RunMapReduce {
         Master master = Master.getInstance();
         master.init(src_file_path, search_file_path, mapDir, reduceDir, block_size);
         master.read_file();
-        master.get_countries();
+        master.get_searchquery();
 
         Long startTime = System.currentTimeMillis();
 
