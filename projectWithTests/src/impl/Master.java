@@ -22,9 +22,11 @@ import api.Reader;
 // Singleton because there is only one Master
 public class Master {
 
-    public String src_file_path;
+    public String SRCFILE;
     public String MAPDIR;
     public String REDDIR;
+    private String SEARCHFILE;
+
     private int block_size;  
     public RandomAccessFile file;
     private Reader file_reader;
@@ -32,16 +34,15 @@ public class Master {
     private int num_cores;
     private int queue_size;
     private ExecutorService thread_pool;
-
-    private final ParseCountries country_parser;
-    private final String COUNTRIES_FILE;
+    private final ParseSearchQueries searchquery_parser;
+    
 
     // Make a list of pairs of indices to various parts of the file
     public List<List<Long>> index_array;
 
-    // Country names to parse
-    public List<List<List<String>>> countries_array;
-    public HashMap<String, List<Integer>> countries_indices;
+    // Search queries to parse
+    public List<List<List<String>>> searchquery_array;
+    public HashMap<String, List<Integer>> searchquery_indices;
 
     // Need to somehow keep track of threads and what they are up to
     public BlockingQueue<Runnable> thread_queue;
@@ -60,16 +61,16 @@ public class Master {
                                     TimeUnit.SECONDS,
                                     thread_queue
                                 );
-        this.country_parser = new ParseCountries();
-        this.COUNTRIES_FILE = "data/AllCountries.csv";
+        this.searchquery_parser = new ParseSearchQueries();
         this.index_array = new ArrayList<List<Long>>();
-        this.countries_array = new ArrayList<List<List<String>>>();
-        this.countries_indices = new HashMap<String, List<Integer>>();
+        this.searchquery_array = new ArrayList<List<List<String>>>();
+        this.searchquery_indices = new HashMap<String, List<Integer>>();
         this.reducer = new ReduceClass();
     }
 
-    public void init(String srcFilePath, String mapDir, String reduceDir, int blockSize){
-        this.src_file_path = srcFilePath;
+    public void init(String srcFilePath, String searchFilePath, String mapDir, String reduceDir, int blockSize){
+        this.SRCFILE = srcFilePath;
+        this.SEARCHFILE = searchFilePath; //"data/AllSearchquery.csv"
         this.MAPDIR = mapDir;
         this.REDDIR = reduceDir;
         this.block_size = blockSize; 
@@ -157,10 +158,10 @@ public class Master {
         }
     }
 
-    private void printCountries() {
-        for (List<List<String>> country : countries_array) {
-            for (List<String> country_subname : country) {
-                for (String word : country_subname) {
+    private void printSearchquery() {
+        for (List<List<String>> searchquery : searchquery_array) {
+            for (List<String> searchquery_subname : searchquery) {
+                for (String word : searchquery_subname) {
                     System.out.print(word);
                     System.out.print("-");
                 }
@@ -171,13 +172,13 @@ public class Master {
     }
 
     public void read_file() {
-        file_reader.makeIndexArray(src_file_path, index_array);
+        file_reader.makeIndexArray(SRCFILE, index_array);
         // printIndexArray();
     }
 
-    public void get_countries() {
-        country_parser.parseFileIntoArray(COUNTRIES_FILE, countries_array, countries_indices);
-        // printCountries();
+    public void get_searchquery() {
+        searchquery_parser.parseFileIntoArray(SEARCHFILE, searchquery_array, searchquery_indices);
+        // printSearchquery();
     }
 
 }
