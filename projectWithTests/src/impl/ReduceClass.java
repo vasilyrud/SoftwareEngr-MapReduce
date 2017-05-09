@@ -46,7 +46,7 @@ public class ReduceClass {
 
         // Loop through all map outputs
         for (int f = 0; f < Master.getInstance().index_array.size(); f++) {
-            try (BufferedReader br = new BufferedReader(new FileReader(Master.getInstance().cached_map_output + "/map" + f + ".csv"))) {
+            try (BufferedReader br = new BufferedReader(new FileReader(Master.getInstance().MAPDIR + "/map" + f + ".csv"))) {
                 // Loop through lines
                 for (String line; (line = br.readLine()) != null;) {
 

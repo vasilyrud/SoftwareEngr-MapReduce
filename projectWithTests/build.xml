@@ -53,8 +53,8 @@
     <java fork="true" classname="impl.RunMapReduce">
       <jvmarg value="-ea"/>
       <classpath refid="default_classpath"/>
-      <arg value="${view}"/>
-      <arg value="${game}"/>
+      <arg value="${bSize}"/>
+      <arg value="${input}"/>
     </java>
   </target>
 </project>

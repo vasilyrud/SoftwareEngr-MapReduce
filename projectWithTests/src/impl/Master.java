@@ -21,12 +21,13 @@ import api.Reader;
 
 // Singleton because there is only one Master
 public class Master {
-    private Reader file_reader;
-    public String main_file_path;
+
+    public String src_file_path;
+    public String MAPDIR;
+    public String REDDIR;
+    private int block_size;  
     public RandomAccessFile file;
-    public final String MAPDIR;
-    public final String REDDIR;
-    public String cached_map_output;
+    private Reader file_reader;
 
     private int num_cores;
     private int queue_size;
@@ -49,14 +50,8 @@ public class Master {
 
     // Constructor
     private Master() {
-        this.MAPDIR = "map_output";
-        this.REDDIR = "reduce_output";
-        this.cached_map_output = "/Volumes/Samsung_T3/map_output";
-        this.file_reader = new BlockReader();
         this.num_cores = Runtime.getRuntime().availableProcessors() - 1;
-        // this.num_cores = 1;
         this.queue_size = 10;
-        // this.thread_pool = Executors.newFixedThreadPool(num_cores);
         this.thread_queue = new ArrayBlockingQueue<Runnable>(queue_size);
         this.thread_pool = new ThreadPoolExecutor(
                                     num_cores,
@@ -71,6 +66,14 @@ public class Master {
         this.countries_array = new ArrayList<List<List<String>>>();
         this.countries_indices = new HashMap<String, List<Integer>>();
         this.reducer = new ReduceClass();
+    }
+
+    public void init(String srcFilePath, String mapDir, String reduceDir, int blockSize){
+        this.src_file_path = srcFilePath;
+        this.MAPDIR = mapDir;
+        this.REDDIR = reduceDir;
+        this.block_size = blockSize; 
+        this.file_reader = new BlockReader(block_size);
     }
 
     // Internal singleton method that stores the only class instance
@@ -111,7 +114,6 @@ public class Master {
 
         // Execute as many maps as there are file segments
         for (int i = 0; i < index_array.size(); i++) {
-        // for (int i = 0; i < 100; i++) {
             while(true) {
                 try {
                     thread_pool.execute(new MapClass(i,
@@ -120,7 +122,7 @@ public class Master {
                                         ));
                     break;
                 } catch (RejectedExecutionException e) {
-                    System.out.println("Rejected Execution");
+                    System.out.println("Rejected Execution. Thread delayed.");
                     try {
                         TimeUnit.MILLISECONDS.sleep(1000);
                     } catch (InterruptedException te) {
@@ -168,9 +170,8 @@ public class Master {
         }
     }
 
-    public void read_file(String file_path) {
-        this.main_file_path = file_path;
-        file_reader.makeIndexArray(file_path, index_array);
+    public void read_file() {
+        file_reader.makeIndexArray(src_file_path, index_array);
         // printIndexArray();
     }
 
@@ -179,5 +180,4 @@ public class Master {
         // printCountries();
     }
 
-    // public void run
 }
