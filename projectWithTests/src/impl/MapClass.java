@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Iterator;
+//import java.lang.System.exit;
 
 /*** MapClass processes a certain block of text specified via the constructor.
 It counts the number of times each searchquery is mentioned in that block and
@@ -111,7 +112,8 @@ public class MapClass implements Runnable {
         try {
             this.file.close();
         } catch (FileNotFoundException e) {
-            System.out.println("Inside map: FileNotFoundException occured");
+            System.out.println("Source file: FileNotFoundException occured");
+            System.exit(0);
         } catch (IOException e) {
             System.out.println("Inside map: IOException occured");
         } catch (NullPointerException e) {
@@ -137,7 +139,8 @@ public class MapClass implements Runnable {
         try {
             this.file = new RandomAccessFile(Master.getInstance().SRCFILE, "r");
         } catch (FileNotFoundException e) {
-            System.out.println("Inside map: FileNotFoundException occured");
+            System.out.println("Source file: FileNotFoundException occured");
+            System.exit(0);
         } catch (NullPointerException e) {
             System.out.println("CAUGHT NullPointerException");
         }

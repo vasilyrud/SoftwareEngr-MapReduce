@@ -70,6 +70,7 @@ public class ParseSearchQueries {
             }
         } catch (FileNotFoundException e) {
             System.out.println("FileNotFoundException occured");
+            System.exit(0);
         } catch (IOException e) {
             System.out.println("IOException occured");
         }

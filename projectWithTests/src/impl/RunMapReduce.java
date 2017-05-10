@@ -3,6 +3,7 @@ package impl;
 import java.util.*;
 import java.util.stream.*;
 import java.util.function.DoubleSupplier;
+import java.lang.Integer;
 
 public class RunMapReduce {
     public static void main(String[] args) {
@@ -10,15 +11,13 @@ public class RunMapReduce {
         String src_file_path;
         String search_file_path;
         int block_size;
-
-        if (args.length >= 3) {
+        
+        if (args[0].length() != 11 && args[1].length() != 8 && args[2].length() != 12) {
             // use args
             src_file_path = args[0];
             search_file_path = args[1];
             block_size = Integer.parseInt(args[2]);
         } else {
-            // user user input
-
             // get the source file path
             Scanner reader = new Scanner(System.in);
             System.out.println("Enter your source file (XML) path: ");
@@ -37,7 +36,7 @@ public class RunMapReduce {
             ADJUSTABLE SETTINGS
         *********************************************/
             // 616 MB wiki xml source file (Windows)
-            //String src_file_path = "C:/Users/USER/Documents/Software Engineering/SoftwareEngr-MapReduce/smallWiki.xml";
+            //String src_file_path = "C:/Users/USER/Documents/Software_Engineering/SoftwareEngr-MapReduce/smallWiki.xml";
             // 58 GB wiki xml file on hard drive (Mac)
             //String file_path = "/Volumes/Samsung_T3/enwiki-20170420-pages-articles.xml";
 

@@ -60,7 +60,8 @@ public class WordConsciousReader implements Reader {
 
             file.close();
         } catch (FileNotFoundException e) {
-            System.out.println("FileNotFoundException occured");
+            System.out.println("Reader: FileNotFoundException occured");
+             System.exit(0);
         } catch (IOException e) {
             System.out.println("IOException occured");
         }
