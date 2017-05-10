@@ -43,7 +43,6 @@ public class ParseSearchQueries {
         Searchquery.get(i).get(j).get(k)
 
         */
-
         // Loop through all lines/search queries
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             int i = 0;
@@ -53,7 +52,7 @@ public class ParseSearchQueries {
                 // Add searchquery slot
                 array.add(new ArrayList<List<String>>());
 
-                // Store temporary split by searchquery name without splitting by spaces
+                // Store temporary split by search query name without splitting by spaces
                 List<String> tmp_searchquery_split = Arrays.asList(line.split(",")); 
 
                 // Split each searchquery by sub-names
@@ -84,5 +83,7 @@ public class ParseSearchQueries {
             }
         }
     }
+
+
 }
 
