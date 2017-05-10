@@ -6,7 +6,7 @@ import java.util.function.DoubleSupplier;
 
 public class RunMapReduce {
     public static void main(String[] args) {
-
+      
         String src_file_path;
         String search_file_path;
         int block_size;
@@ -41,11 +41,10 @@ public class RunMapReduce {
             // 58 GB wiki xml file on hard drive (Mac)
             //String file_path = "/Volumes/Samsung_T3/enwiki-20170420-pages-articles.xml";
 
-            //String search_file_path = "data/AllSearchquery.csv";
+            //String search_file_path = "data/AllCountries.csv";
 
             // block size in MB for splititng up the file
-            //int block_size = 100;
-
+            //int block_size = 50;
         /*******************************************/
         
         // standard map output setting

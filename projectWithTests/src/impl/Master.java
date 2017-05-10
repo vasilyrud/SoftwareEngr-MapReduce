@@ -74,7 +74,7 @@ public class Master {
         this.MAPDIR = mapDir;
         this.REDDIR = reduceDir;
         this.block_size = blockSize; 
-        this.file_reader = new BlockReader(block_size);
+        this.file_reader = new WordConsciousReader(block_size);
     }
 
     // Internal singleton method that stores the only class instance
