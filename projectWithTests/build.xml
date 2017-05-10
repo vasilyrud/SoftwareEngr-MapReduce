@@ -53,8 +53,9 @@
     <java fork="true" classname="impl.RunMapReduce">
       <jvmarg value="-ea"/>
       <classpath refid="default_classpath"/>
-      <arg value="${bSize}"/>
-      <arg value="${input}"/>
+      <arg value="${readfile}"/>
+      <arg value="${rules}"/>
+      <arg value="${blocksize}"/>
     </java>
   </target>
 </project>

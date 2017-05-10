@@ -6,20 +6,32 @@ import java.util.function.DoubleSupplier;
 
 public class RunMapReduce {
     public static void main(String[] args) {
+      
+        String src_file_path;
+        String search_file_path;
+        int block_size;
 
-        //get the source file path
-        Scanner reader = new Scanner(System.in);
-        System.out.println("Enter your source file (XML) path: ");
-        String src_file_path = reader.nextLine();
+        if (args.length >= 3) {
+            // use args
+            src_file_path = args[0];
+            search_file_path = args[1];
+            block_size = Integer.parseInt(args[2]);
+        } else {
+            // user user input
 
-        // get the search file path
-        System.out.println("Enter your search file (csv) path: ");
-        String search_file_path = reader.nextLine();
+            // get the source file path
+            Scanner reader = new Scanner(System.in);
+            System.out.println("Enter your source file (XML) path: ");
+            src_file_path = reader.nextLine();
 
-        // get the map block size
-        System.out.println("Enter desired block size (MB): ");
-        int block_size = reader.nextInt();
+            // get the search file path
+            System.out.println("Enter your search file (csv) path: ");
+            search_file_path = reader.nextLine();
 
+            // get the map block size
+            System.out.println("Enter desired block size (MB): ");
+            block_size = reader.nextInt();
+        }
 
         /*********************************************
             ADJUSTABLE SETTINGS
