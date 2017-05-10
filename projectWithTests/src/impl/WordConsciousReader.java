@@ -31,22 +31,26 @@ public class WordConsciousReader implements Reader {
             byte [] testLength; 
             int counter = 0;
             int maxSearchQueryLength = 100;
-            
+            int prev_counter = 0;
+
             // Distribute the main blocks of BLOCK_SIZE each
             for (long i = 0; i < file.length()/BLOCK_SIZE; i++) {
                 testLength = new byte[maxSearchQueryLength];
                 file.seek((i+1)*BLOCK_SIZE - 2);
                 file.read(testLength);
+                prev_counter = counter;
                 counter = 0;
 
                 do{
                     testChar = (char)testLength[counter];
                     counter++;
-                }while(testChar != ' ' && counter < maxSearchQueryLength - 1);
+                }while(Character.isLetter(testChar) && counter < maxSearchQueryLength - 1);
                    
                 array.add(new ArrayList<Long>());
-                array.get((int)i).add(i*BLOCK_SIZE); // start of block
+                array.get((int)i).add(i*BLOCK_SIZE + prev_counter); // start of block
                 array.get((int)i).add((i+1)*BLOCK_SIZE + counter - 1); // end of block
+
+                System.out.println("Made blockfrom " + array.get((int)i).get(0) + " to " + array.get((int)i).get(1));
             }
 
             // Make the final block that is smaller than the rest
