@@ -50,7 +50,7 @@ public class WordConsciousReader implements Reader {
                 array.get((int)i).add(i*BLOCK_SIZE + prev_counter); // start of block
                 array.get((int)i).add((i+1)*BLOCK_SIZE + counter - 1); // end of block
 
-                System.out.println("Made blockfrom " + array.get((int)i).get(0) + " to " + array.get((int)i).get(1));
+                // System.out.println("Made block from " + array.get((int)i).get(0) + " to " + array.get((int)i).get(1));
             }
 
             // Make the final block that is smaller than the rest
