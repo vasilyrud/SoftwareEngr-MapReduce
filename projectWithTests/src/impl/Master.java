@@ -123,7 +123,7 @@ public class Master {
                                         ));
                     break;
                 } catch (RejectedExecutionException e) {
-                    System.out.println("Rejected Execution. Thread delayed.");
+                    System.out.println("Waiting for threads.");
                     try {
                         TimeUnit.MILLISECONDS.sleep(1000);
                     } catch (InterruptedException te) {
